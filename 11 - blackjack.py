@@ -12,24 +12,19 @@ logo = """
 """
 
 
-def is_blackjack(list_cards):
-    eleven = ten = blackjack = False
-    for card in list_cards:
-        if card == 11:
-            eleven = True
-        elif card == 10:
-            ten = True
-    if ten and eleven:
+def is_blackjack(cards):
+    blackjack = False
+    if 11 in cards and 10 in cards:
         blackjack = True
     return blackjack
 
 
-def sum_scores(list_cards):
+def calculate_score(list_cards):
+    """Take a list of cards and return the score calculated from the cards"""
     score = sum(list_cards)
     if 11 in list_cards and score > 21:
-        for i, card in enumerate(list_cards):
-            if card == 11:
-                list_cards[i] = 1
+        list_cards.remove(11)
+        list_cards.append(1)
         return sum(list_cards)
     else:
         return sum(list_cards)
@@ -72,8 +67,8 @@ def game():
         print(f"Your cards: {user}, current score: {sum(user)}")
         print(f"Computer's first card: {computer[0]}")
 
-        scores_computer = sum_scores(computer)
-        scores_users = sum_scores(user)
+        scores_computer = calculate_score(computer)
+        scores_users = calculate_score(user)
 
         winner(sc_user=scores_users, sc_computer=scores_computer, cards_computer=computer, cards_user=user)
 
@@ -82,7 +77,7 @@ def game():
             option = input("Type 'y' to get another card, type 'n' to pass: ").lower()
             if option == 'y':
                 user.append(random.choice(cards))
-                scores_users = sum_scores(user)
+                scores_users = calculate_score(user)
                 if sum(user) < 21:
                     print(f"Your cards: {user}, current score: {sum(user)}")
                 winner(sc_user=scores_users, sc_computer=scores_computer, cards_computer=computer, cards_user=user)
@@ -92,8 +87,8 @@ def game():
                 end = False
                 while not end:
                     computer.append(random.choice(cards))
-                    scores_computer = sum_scores(computer)
-                    if sum_scores(computer) >= 16:
+                    scores_computer = calculate_score(computer)
+                    if calculate_score(computer) >= 16:
                         end = True
                 winner(sc_user=scores_users, sc_computer=scores_computer, cards_computer=computer, cards_user=user)
                 if 21 > sum(computer) > 16:
